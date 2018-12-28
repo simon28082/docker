@@ -1,0 +1,5 @@
+*
+!config/config-production
+!Dockerfile
+!run.sh
+!.gitignore
