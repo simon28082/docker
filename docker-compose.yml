@@ -6,6 +6,10 @@ networks:
   backend:
     driver: ${NETWORKS_DRIVER}
 
+volumes:
+  code:
+    driver: ${VOLUME_DRIVER}
+
 services:
   workspace:
     build:
@@ -20,19 +24,27 @@ services:
         - ARG_APP_RUN_NAME=${APP_RUN_NAME}
         - ARG_APP_RUN_GROUP=${APP_RUN_GROUP}
         - ARG_TIMEZONE=${TIMEZONE}
+        - ARG_WORKSPACE_INSTALL_NPM=${WORKSPACE_INSTALL_NPM}
+        - ARG_WORKSPACE_INSTALL_CRONTAB=${WORKSPACE_INSTALL_CRONTAB}
+        - ARG_WORKSPACE_CRONTAB_CONFIG=${WORKSPACE_CRONTAB_CONFIG}
+        - ARG_WORKSPACE_INSTALL_SUPERVISOR=${WORKSPACE_INSTALL_SUPERVISOR}
+        - ARG_WORKSPACE_SUPERVISOR_CONFIG=${WORKSPACE_SUPERVISOR_CONFIG}
     environment:
       - RUN_ENV=${RUN_ENV}
       - CONTAINER_CODE_PATH=${CONTAINER_CODE_PATH}
-      - CONTAINER_DOCKER_PATH=${CONTAINER_DOCKER_PATH}
       - APP_RUN_PUID=${APP_RUN_PUID}
       - APP_RUN_PGID=${APP_RUN_PGID}
       - APP_RUN_NAME=${APP_RUN_NAME}
       - APP_RUN_GROUP=${APP_RUN_GROUP}
+      - WORKSPACE_CRONTAB_CONFIG=${WORKSPACE_CRONTAB_CONFIG}
+      - WORKSPACE_SUPERVISOR_CONFIG=${WORKSPACE_SUPERVISOR_CONFIG}
     volumes:
       - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
+      - code:${CONTAINER_CODE_PATH}
     #覆盖CMD的默认命令，和entrypoint不一样，有单独的entrypoint设置
     #entrypoint 设置后CMD命令将当作参数传入entrypoint
-    command: "${CONTAINER_DOCKER_PATH}/workspace/run.sh"
+    entrypoint: "/usr/bin/entrypoint.sh"
+    command: "/bin/bash"
     expose:
       - "28080"
     ports:

@@ -3,27 +3,30 @@ FROM ubuntu:latest
 
 MAINTAINER simon
 
+
 #### silent installation #############################
 ARG DEBIAN_FRONTEND=noninteractive
+
 
 #### user and group #############################
 ARG ARG_APP_RUN_PUID=1000
 ARG ARG_APP_RUN_PGID=1000
 ARG ARG_APP_RUN_NAME=crcms
 ARG ARG_APP_RUN_GROUP=crcms
+ENV APP_RUN_PUID=${ARG_APP_RUN_PUID}
+ENV APP_RUN_PGID=${ARG_APP_RUN_PGID}
+ENV APP_RUN_NAME=${ARG_APP_RUN_NAME}
+ENV APP_RUN_GROUP=${ARG_APP_RUN_GROUP}
 RUN groupadd -g ${ARG_APP_RUN_PGID} ${ARG_APP_RUN_GROUP} && \
     useradd -u ${ARG_APP_RUN_PUID} -g ${ARG_APP_RUN_PGID} ${ARG_APP_RUN_NAME} && \
     usermod -s /sbin/nologin ${ARG_APP_RUN_NAME}
 
 
-#### software #############################
+#### software base #############################
 RUN apt-get update -yqq \
+    && apt-get install -y curl \
     && apt-get install -y apt-utils \
-    && apt-get install -y cron \
-    # supervisor
-    && apt-get install -y supervisor \
     # php
-#    && sh -c '/bin/echo -e "6\n69" | apt-get install -yqq php7.2-dev' \
     && apt-get install -y php7.2-dev \
     && apt-get install -y php7.2-pdo-mysql \
     && apt-get install -y php7.2-mbstring \
@@ -32,20 +35,39 @@ RUN apt-get update -yqq \
     && apt-get install -y php7.2-gd \
     && apt-get install -y composer
 
-# npm
-RUN apt-get install curl \
-    && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
-    && apt-get install -y nodejs \
-    && apt-get install -y build-essential
 
-# clean
-RUN apt-get purge -y curl
+#### npm #############################
+ARG ARG_WORKSPACE_INSTALL_NPM=false
+RUN if [ ${ARG_WORKSPACE_INSTALL_NPM} = true ]; then \
+    curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get install -y build-essential \
+;fi
+
+
+#### crontab #############################
+ARG ARG_WORKSPACE_INSTALL_CRONTAB=false
+ARG ARG_WORKSPACE_CRONTAB_CONFIG=""
+ENV WORKSPACE_CRONTAB_CONFIG=${ARG_WORKSPACE_CRONTAB_CONFIG}
+RUN if [ ${ARG_WORKSPACE_INSTALL_CRONTAB} = true ]; then \
+    apt-get install -y cron \
+;fi
+
+
+#### supervisor #############################
+ARG ARG_WORKSPACE_INSTALL_SUPERVISOR=false
+ARG ARG_WORKSPACE_SUPERVISOR_CONFIG=/etc/supervisor/supervisord.conf
+ENV WORKSPACE_SUPERVISOR_CONFIG=${ARG_WORKSPACE_SUPERVISOR_CONFIG}
+RUN if [ ${ARG_WORKSPACE_INSTALL_SUPERVISOR} = true ]; then \
+    apt-get install -y supervisor \
+;fi
 
 
 #### set timezone #############################
 ARG ARG_TIMEZONE=UTC
-RUN apt-get install -y tzdata \
-    && ln -snf /usr/share/zoneinfo/${ARG_TIMEZONE} /etc/localtime && echo ${ARG_TIMEZONE} > /etc/timezone
+#RUN apt-get install -y tzdata \
+#    &&
+RUN ln -snf /usr/share/zoneinfo/${ARG_TIMEZONE} /etc/localtime && echo ${ARG_TIMEZONE} > /etc/timezone
 
 
 #### php pecl #############################
@@ -80,10 +102,26 @@ RUN if [ ${ARG_WORKSPACE_INSTALL_REDIS} = true ]; then \
 ;fi
 
 
+#### clear #############################
+# clear Ubuntu image will run automatically apt-get clean,so is not need apt-get clean
+RUN apt-get -y autoremove
+
+
+#### volume #############################
+VOLUME ["/config", "/data", "/var/www"]
+
+
 #### expose #############################
-EXPOSE 28080
+EXPOSE 28080/tcp
+
+
+#### entrypoint and cmd #############################
+COPY "./entrypoint.sh" /usr/bin/entrypoint.sh
+ENTRYPOINT ["/usr/bin/entrypoint.sh"]
+CMD ["/bin/bash"]
 
 
 #### workdir #############################
 ARG ARG_CONTAINER_CODE_PATH=/var/www
+ENV CONTAINER_CODE_PATH=${ARG_CONTAINER_CODE_PATH}
 WORKDIR ${ARG_CONTAINER_CODE_PATH}
