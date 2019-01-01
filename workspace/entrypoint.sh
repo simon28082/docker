@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #supervisor
 supervisor_exists=`whereis supervisord`
@@ -16,5 +16,6 @@ fi
 
 #chown
 chown ${APP_RUN_PUID}:${APP_RUN_PGID} -R ${CONTAINER_CODE_PATH}/../
+
 
 exec "$@"
