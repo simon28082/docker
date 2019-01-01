@@ -3,6 +3,15 @@ FROM ubuntu:latest
 
 MAINTAINER simon
 
+#### global common #############################
+ARG ARG_RUN_ENV=production
+ENV RUN_ENV=${ARG_RUN_ENV}
+ARG ARG_CONTAINER_CODE_PATH=/var/www
+ENV CONTAINER_CODE_PATH=${ARG_CONTAINER_CODE_PATH}
+ARG ARG_WORKSPACE_CONFIG=/config
+ENV WORKSPACE_CONFIG=${ARG_WORKSPACE_CONFIG}
+ARG ARG_WORKSPACE_DATA=/data
+
 
 #### silent installation #############################
 ARG DEBIAN_FRONTEND=noninteractive
@@ -108,7 +117,7 @@ RUN apt-get -y autoremove
 
 
 #### volume #############################
-VOLUME ["/config", "/data", "/var/www"]
+VOLUME ["${ARG_WORKSPACE_CONFIG}", "${ARG_WORKSPACE_DATA}", "${ARG_CONTAINER_CODE_PATH}"]
 
 
 #### expose #############################
@@ -116,12 +125,10 @@ EXPOSE 28080/tcp
 
 
 #### entrypoint and cmd #############################
-COPY "./entrypoint.sh" /usr/bin/entrypoint.sh
+COPY ./entrypoint.sh /usr/bin/entrypoint.sh
 ENTRYPOINT ["/usr/bin/entrypoint.sh"]
 CMD ["/bin/bash"]
 
 
 #### workdir #############################
-ARG ARG_CONTAINER_CODE_PATH=/var/www
-ENV CONTAINER_CODE_PATH=${ARG_CONTAINER_CODE_PATH}
 WORKDIR ${ARG_CONTAINER_CODE_PATH}
