@@ -4,11 +4,25 @@ FROM php:7.2-fpm
 MAINTAINER simon
 
 
+#### global common #############################
+ARG ARG_RUN_ENV=production
+ENV RUN_ENV=${ARG_RUN_ENV}
+ARG ARG_CONTAINER_CODE_PATH=/var/www
+ENV CONTAINER_CODE_PATH=${ARG_CONTAINER_CODE_PATH}
+ARG ARG_PHP_FPM_CONFIG=/config
+ENV PHP_FPM_CONFIG=${ARG_PHP_FPM_CONFIG}
+
+
 #### user and group #############################
 ARG ARG_APP_RUN_PUID=1000
 ARG ARG_APP_RUN_PGID=1000
 ARG ARG_APP_RUN_NAME=crcms
 ARG ARG_APP_RUN_GROUP=crcms
+ENV APP_RUN_PUID=${ARG_APP_RUN_PUID}
+ENV APP_RUN_PGID=${ARG_APP_RUN_PGID}
+ENV APP_RUN_NAME=${ARG_APP_RUN_NAME}
+ENV APP_RUN_GROUP=${ARG_APP_RUN_GROUP}
+
 RUN groupadd -g ${ARG_APP_RUN_PGID} ${ARG_APP_RUN_GROUP} && \
     useradd -u ${ARG_APP_RUN_PUID} -g ${ARG_APP_RUN_PGID} ${ARG_APP_RUN_NAME} && \
     usermod -s /sbin/nologin ${ARG_APP_RUN_NAME}
@@ -23,11 +37,13 @@ RUN ln -snf /usr/share/zoneinfo/${ARG_TIMEZONE} /etc/localtime && echo ${ARG_TIM
 RUN apt-get update -yqq \
     && pecl channel-update pecl.php.net
 
+
 #### php pecl #############################
 # base install
 #pdo_mysql,opcache
 RUN docker-php-ext-install pdo_mysql \
     && docker-php-ext-install opcache
+
 
 # mongodb
 ARG ARG_PHP_FPM_INSTALL_MONGODB=false
@@ -43,21 +59,19 @@ RUN if [ ${ARG_PHP_FPM_INSTALL_REDIS} = true ]; then \
     && docker-php-ext-enable redis \
 ;fi
 
-# copy php.ini
-ARG RUN_ENV=production
-ARG ARG_PHP_CONFIG_PATH=/usr/local/etc/php
-ARG ARG_LOCAL_PHP_CONFIG_PATH=./config-${RUN_ENV:-production}/php.ini
-COPY ${ARG_LOCAL_PHP_CONFIG_PATH} ${ARG_PHP_CONFIG_PATH}
 
-
-#### workdir #############################
-ARG ARG_CONTAINER_CODE_PATH=/var/www
-WORKDIR ${ARG_CONTAINER_CODE_PATH}
+#### volume #############################
+VOLUME ["${ARG_PHP_FPM_CONFIG}", "${ARG_CONTAINER_CODE_PATH}"]
 
 
 #### expose #############################
-EXPOSE 9000
+EXPOSE 9000/tcp
 
 
 #### cmd #############################
-CMD ["/bin/bash"]
+COPY ./entrypoint.sh /usr/bin/entrypoint.sh
+ENTRYPOINT ["/usr/bin/entrypoint.sh"]
+
+
+#### workdir #############################
+WORKDIR ${ARG_CONTAINER_CODE_PATH}
