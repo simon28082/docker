@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-PHP_INI_CONFIG_PATH=${PHP_FPM_CONFIG}/${RUN_ENV}/php.ini
-PHP_FPM_CONFIG_PATH=${PHP_FPM_CONFIG}/${RUN_ENV}/php-fpm.conf
+PHP_INI_CONFIG_PATH=${PHP_FPM_CONFIG}/php.ini
+PHP_FPM_CONFIG_PATH=${PHP_FPM_CONFIG}/php-fpm.conf
 
 if [ ! -f "${PHP_INI_CONFIG_PATH}" ]; then
     PHP_INI_CONFIG_PATH=/usr/local/etc/php/php.ini-production

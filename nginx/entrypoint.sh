@@ -2,7 +2,7 @@
 
 chown ${APP_RUN_PUID}:${APP_RUN_PGID} -R ${CONTAINER_CODE_PATH}
 
-NGINX_BUILD_CONFIG=${NGINX_CONFIG}/${RUN_ENV}/nginx.conf
+NGINX_BUILD_CONFIG=${NGINX_CONFIG}/nginx.conf
 
 if [ ! -f "${NGINX_BUILD_CONFIG}" ]; then
     NGINX_BUILD_CONFIG=/etc/nginx/nginx.conf
