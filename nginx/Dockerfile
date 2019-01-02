@@ -32,8 +32,14 @@ ARG ARG_TIMEZONE=UTC
 RUN ln -snf /usr/share/zoneinfo/${ARG_TIMEZONE} /etc/localtime && echo ${ARG_TIMEZONE} > /etc/timezone
 
 
+### config #############################
+# use workdir create dir
+WORKDIR ${ARG_NGINX_CONFIG}
+COPY ./${ARG_RUN_ENV}/*.conf ${ARG_NGINX_CONFIG}
+
+
 #### volume #############################
-VOLUME ["${NGINX_CONFIG}", "${ARG_CONTAINER_CODE_PATH}"]
+VOLUME ["${ARG_CONTAINER_CODE_PATH}"]
 
 
 #### expose #############################
