@@ -1,0 +1,47 @@
+version: "3.6"
+
+networks:
+  frontend:
+    driver: overlay
+  backend:
+    driver: overlay
+
+volumes:
+  public_code:
+    driver: local
+  public_config:
+    driver: local
+
+services:
+  nginx:
+    image: hellocr/microservice:nginx-latest
+    volumes:
+      - ${LOCAL_CODE_PATH}:/var/www
+      - ~/code/docker/docker/config:/config
+    networks:
+      - frontend
+    deploy:
+      replicas: 2
+    depends_on:
+      - php-fpm
+    ports:
+      - 80:80
+      - 443:443
+#    ports:
+#      - mode: host
+#        protocol: tcp
+#        published: 80
+#        target: 80
+#      - mode: host
+#        protocol: tcp
+#        published: 443
+#        target: 443
+  php-fpm:
+    image: hellocr/microservice:php-fpm-latest
+    volumes:
+      - ~/code/docker/test:/var/www
+      - ~/code/docker/docker/config:/config
+    networks:
+      - frontend
+    deploy:
+      replicas: 2
