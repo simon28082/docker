@@ -42,7 +42,8 @@ RUN apt-get update -yqq \
 # base install
 #pdo_mysql,opcache
 RUN docker-php-ext-install pdo_mysql \
-    && docker-php-ext-install opcache
+    && docker-php-ext-install opcache \
+    && docker-php-ext-install bcmath
 
 
 # mongodb
