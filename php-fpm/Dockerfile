@@ -35,6 +35,7 @@ RUN ln -snf /usr/share/zoneinfo/${ARG_TIMEZONE} /etc/localtime && echo ${ARG_TIM
 
 #### software install #############################
 RUN apt-get update -yqq \
+    && apt-get install -y procps \
     && pecl channel-update pecl.php.net
 
 
@@ -76,8 +77,13 @@ EXPOSE 9000/tcp
 
 
 #### cmd #############################
-COPY ./entrypoint.sh /usr/bin/entrypoint.sh
+COPY ./*.sh /usr/bin/
 ENTRYPOINT ["/usr/bin/entrypoint.sh"]
+
+
+#### healthcheck #############################
+HEALTHCHECK --interval=60s --timeout=3s --start-period=60s --retries=5 \
+              CMD /usr/bin/healthcheck.sh
 
 
 #### workdir #############################
