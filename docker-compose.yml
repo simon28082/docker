@@ -73,9 +73,6 @@ services:
       - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
       - ${LOCAL_DOCKER_PATH}/nginx/${RUN_ENV}:${NGINX_CONFIG}
     entrypoint: /usr/bin/entrypoint.sh
-#    expose:
-#      - "80"
-#      - "443"
     ports:
       - "${NGINX_HTTP_PORT}:80"
       - "${NGINX_SSL_PORT}:443"
@@ -101,8 +98,6 @@ services:
       - ${LOCAL_DOCKER_PATH}/php-fpm/${RUN_ENV}:${PHP_FPM_CONFIG}
     expose:
       - "9000"
-#    ports:
-#      - "9000:9000"
     networks:
       - frontend
     depends_on:
