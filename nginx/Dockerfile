@@ -28,7 +28,7 @@ RUN groupadd -g ${ARG_APP_RUN_PGID} ${ARG_APP_RUN_GROUP} && \
 
 
 #### set timezone #############################
-ARG ARG_TIMEZONE=UTC
+ARG ARG_TIMEZONE=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/${ARG_TIMEZONE} /etc/localtime && echo ${ARG_TIMEZONE} > /etc/timezone
 
 

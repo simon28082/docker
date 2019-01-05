@@ -62,16 +62,14 @@ RUN if [ ${ARG_WORKSPACE_INSTALL_CRONTAB} = true ]; then \
 
 
 #### supervisor #############################
-ARG ARG_WORKSPACE_INSTALL_SUPERVISOR=false
+ARG ARG_WORKSPACE_INSTALL_SUPERVISOR=true
 RUN if [ ${ARG_WORKSPACE_INSTALL_SUPERVISOR} = true ]; then \
     apt-get install -y supervisor \
 ;fi
 
 
 #### set timezone #############################
-ARG ARG_TIMEZONE=UTC
-#RUN apt-get install -y tzdata \
-#    &&
+ARG ARG_TIMEZONE=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/${ARG_TIMEZONE} /etc/localtime && echo ${ARG_TIMEZONE} > /etc/timezone
 
 
@@ -79,7 +77,7 @@ RUN ln -snf /usr/share/zoneinfo/${ARG_TIMEZONE} /etc/localtime && echo ${ARG_TIM
 ARG ARG_PHP_MODS_AVAILABLE_PATH=/etc/php/7.2/mods-available
 ARG ARG_PHP_CONF_PATH=/etc/php/7.2/cli/conf.d
 # swoole
-ARG ARG_WORKSPACE_INSTALL_SWOOLE=false
+ARG ARG_WORKSPACE_INSTALL_SWOOLE=true
 RUN if [ ${ARG_WORKSPACE_INSTALL_SWOOLE} = true ]; then \
     pecl install swoole \
     && echo "extension=swoole.so" > ${ARG_PHP_MODS_AVAILABLE_PATH}/swoole.ini \
@@ -87,7 +85,7 @@ RUN if [ ${ARG_WORKSPACE_INSTALL_SWOOLE} = true ]; then \
 ;fi
 
 # mongodb
-ARG ARG_WORKSPACE_INSTALL_MONGODB=false
+ARG ARG_WORKSPACE_INSTALL_MONGODB=true
 RUN if [ ${ARG_WORKSPACE_INSTALL_MONGODB} = true ]; then \
     pecl install mongodb \
     && echo "extension=mongodb.so" > ${ARG_PHP_MODS_AVAILABLE_PATH}/mongodb.ini \
@@ -95,7 +93,7 @@ RUN if [ ${ARG_WORKSPACE_INSTALL_MONGODB} = true ]; then \
 ;fi
 
 # redis
-ARG ARG_WORKSPACE_INSTALL_REDIS=false
+ARG ARG_WORKSPACE_INSTALL_REDIS=true
 RUN if [ ${ARG_WORKSPACE_INSTALL_REDIS} = true ]; then \
     #reids needs igbinary
     pecl install igbinary \
