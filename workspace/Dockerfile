@@ -56,8 +56,6 @@ RUN if [ ${ARG_WORKSPACE_INSTALL_NPM} = true ]; then \
 
 #### crontab #############################
 ARG ARG_WORKSPACE_INSTALL_CRONTAB=false
-ARG ARG_WORKSPACE_CRONTAB_CONFIG=""
-ENV WORKSPACE_CRONTAB_CONFIG=${ARG_WORKSPACE_CRONTAB_CONFIG}
 RUN if [ ${ARG_WORKSPACE_INSTALL_CRONTAB} = true ]; then \
     apt-get install -y cron \
 ;fi
@@ -65,8 +63,6 @@ RUN if [ ${ARG_WORKSPACE_INSTALL_CRONTAB} = true ]; then \
 
 #### supervisor #############################
 ARG ARG_WORKSPACE_INSTALL_SUPERVISOR=false
-ARG ARG_WORKSPACE_SUPERVISOR_CONFIG=/etc/supervisor/supervisord.conf
-ENV WORKSPACE_SUPERVISOR_CONFIG=${ARG_WORKSPACE_SUPERVISOR_CONFIG}
 RUN if [ ${ARG_WORKSPACE_INSTALL_SUPERVISOR} = true ]; then \
     apt-get install -y supervisor \
 ;fi
@@ -116,8 +112,14 @@ RUN if [ ${ARG_WORKSPACE_INSTALL_REDIS} = true ]; then \
 RUN apt-get -y autoremove
 
 
+### config #############################
+# use workdir create dir
+WORKDIR ${ARG_WORKSPACE_CONFIG}
+COPY ./${ARG_RUN_ENV}/ ${ARG_WORKSPACE_CONFIG}
+
+
 #### volume #############################
-VOLUME ["${ARG_WORKSPACE_CONFIG}", "${ARG_WORKSPACE_DATA}", "${ARG_CONTAINER_CODE_PATH}"]
+VOLUME ["${ARG_WORKSPACE_DATA}", "${ARG_CONTAINER_CODE_PATH}"]
 
 
 #### expose #############################
