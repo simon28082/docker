@@ -1,0 +1,1 @@
+* * * * * ${APP_RUN_NAME} php ${CONTAINER_CODE_PATH}/bin/artisan schedule:run >> /dev/null 2>&1
