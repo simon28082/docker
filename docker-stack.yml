@@ -19,7 +19,7 @@ services:
       - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
       - ${LOCAL_DOCKER_PATH}/workspace/${RUN_ENV}:${WORKSPACE_CONFIG}
     expose:
-      - "28080"
+      - 28080
     networks:
       - backend
     deploy:
@@ -38,8 +38,8 @@ services:
     depends_on:
       - php-fpm
     ports:
-      - 80:80
-      - 443:443
+      - ${NGINX_HTTP_PORT}:80
+      - ${NGINX_SSL_PORT}:443
 #    ports:
 #      - mode: host
 #        protocol: tcp

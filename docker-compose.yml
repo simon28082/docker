@@ -36,9 +36,9 @@ services:
     entrypoint: /usr/bin/entrypoint.sh
     command: /bin/bash
     expose:
-      - "28080"
+      - 28080
     ports:
-      - "${WORKSPACE_SWOOLE_PORT}:28080"
+      - ${WORKSPACE_SWOOLE_PORT}:28080
     networks:
       - backend
     tty: true
@@ -74,8 +74,8 @@ services:
       - ${LOCAL_DOCKER_PATH}/nginx/${RUN_ENV}:${NGINX_CONFIG}
     entrypoint: /usr/bin/entrypoint.sh
     ports:
-      - "${NGINX_HTTP_PORT}:80"
-      - "${NGINX_SSL_PORT}:443"
+      - ${NGINX_HTTP_PORT}:80
+      - ${NGINX_SSL_PORT}:443
     networks:
       - frontend
       - backend
@@ -97,7 +97,7 @@ services:
       - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
       - ${LOCAL_DOCKER_PATH}/php-fpm/${RUN_ENV}:${PHP_FPM_CONFIG}
     expose:
-      - "9000"
+      - 9000
     networks:
       - frontend
     depends_on:
