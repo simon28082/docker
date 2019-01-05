@@ -8,7 +8,8 @@ if [ ! -f "${nginx_build_config}" ]; then
     nginx_build_config=/etc/nginx/nginx.conf
 fi
 
-nginx_run_config=$(dirname "${nginx_build_config}")/nginx-run.conf
+#nginx_run_config=$(dirname "${nginx_build_config}")/nginx-run.conf
+nginx_run_config=/var/nginx-run.conf
 
 cat ${nginx_build_config} \
 | sed "s#\${APP_RUN_NAME}#${APP_RUN_NAME}#g" \
