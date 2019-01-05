@@ -2,20 +2,20 @@
 
 chown ${APP_RUN_PUID}:${APP_RUN_PGID} -R ${CONTAINER_CODE_PATH}
 
-NGINX_BUILD_CONFIG=${NGINX_CONFIG}/nginx.conf
+nginx_build_config=${NGINX_CONFIG}/nginx.conf
 
-if [ ! -f "${NGINX_BUILD_CONFIG}" ]; then
-    NGINX_BUILD_CONFIG=/etc/nginx/nginx.conf
+if [ ! -f "${nginx_build_config}" ]; then
+    nginx_build_config=/etc/nginx/nginx.conf
 fi
 
-NGINX_RUN_CONFIG=$(dirname "${NGINX_BUILD_CONFIG}")/nginx-run.conf
+nginx_run_config=$(dirname "${nginx_build_config}")/nginx-run.conf
 
-cat ${NGINX_BUILD_CONFIG} \
+cat ${nginx_build_config} \
 | sed "s#\${APP_RUN_NAME}#${APP_RUN_NAME}#g" \
 | sed "s#\${PHP_FPM_PORT}#${PHP_FPM_PORT}#g" \
 | sed "s#\${CONTAINER_CODE_PATH}#${CONTAINER_CODE_PATH}#g" \
-> ${NGINX_RUN_CONFIG}
+> ${nginx_run_config}
 
-nginx -g "daemon off;" -c ${NGINX_RUN_CONFIG}
+nginx -g "daemon off;" -c ${nginx_run_config}
 
 exec "$@"

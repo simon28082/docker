@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
-PHP_INI_CONFIG_PATH=${PHP_FPM_CONFIG}/php.ini
-PHP_FPM_CONFIG_PATH=${PHP_FPM_CONFIG}/php-fpm.conf
-PHP_INI_CONFIG_RUN_PATH=${PHP_FPM_CONFIG}/php-run.ini
-PHP_FPM_CONFIG_RUN_PATH=${PHP_FPM_CONFIG}/php-fpm-run.conf
+php_ini_config_path=${PHP_FPM_CONFIG}/php.ini
+php_fpm_config_path=${PHP_FPM_CONFIG}/php-fpm.conf
+php_ini_config_run_path=${PHP_FPM_CONFIG}/php-run.ini
+php_fpm_config_run_path=${PHP_FPM_CONFIG}/php-fpm-run.conf
 
 
-if [ ! -f "${PHP_INI_CONFIG_PATH}" ]; then
-    PHP_INI_CONFIG_PATH=/usr/local/etc/php/php.ini-production
+if [ ! -f "${php_ini_config_path}" ]; then
+    php_ini_config_path=/usr/local/etc/php/php.ini-production
 fi
 
-if [ ! -f "${PHP_FPM_CONFIG_PATH}" ]; then
-    PHP_FPM_CONFIG_PATH=/usr/local/etc/php-fpm.conf
+if [ ! -f "${php_fpm_config_path}" ]; then
+    php_fpm_config_path=/usr/local/etc/php-fpm.conf
 fi
 
 # chown
@@ -19,18 +19,18 @@ chown ${APP_RUN_PUID}:${APP_RUN_PGID} -R ${CONTAINER_CODE_PATH}
 
 # build
 
-cat "${PHP_INI_CONFIG_PATH}" \
+cat "${php_ini_config_path}" \
 | sed "s#\${APP_RUN_NAME}#${APP_RUN_NAME}#g" \
 | sed "s#\${APP_RUN_GROUP}#${APP_RUN_GROUP}#g" \
-> "${PHP_INI_CONFIG_RUN_PATH}"
+> "${php_ini_config_run_path}"
 
-cat "${PHP_FPM_CONFIG_PATH}" \
+cat "${php_fpm_config_path}" \
 | sed "s#\${APP_RUN_NAME}#${APP_RUN_NAME}#g" \
 | sed "s#\${APP_RUN_GROUP}#${APP_RUN_GROUP}#g" \
-> "${PHP_FPM_CONFIG_RUN_PATH}"
+> "${php_fpm_config_run_path}"
 
 # run
-php-fpm -c ${PHP_INI_CONFIG_RUN_PATH} -y ${PHP_FPM_CONFIG_RUN_PATH}
+php-fpm -c ${php_ini_config_run_path} -y ${php_fpm_config_run_path}
 
 # clean opcache
 php -r 'if(function_exists("opcache_reset")) {opcache_reset();}'
