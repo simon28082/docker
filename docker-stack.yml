@@ -13,15 +13,28 @@ volumes:
     driver: local
 
 services:
+  workspace:
+    image: hellocr/microservice:php-workspace-latest
+    volumes:
+      - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
+      - ${LOCAL_DOCKER_PATH}/workspace/${RUN_ENV}:${WORKSPACE_CONFIG}
+    expose:
+      - "28080"
+    networks:
+      - backend
+    deploy:
+      replicas: ${DEPLOY_REPLICAS}
+    tty: true
   nginx:
     image: hellocr/microservice:nginx-latest
     volumes:
-      - ${LOCAL_CODE_PATH}:/var/www
-      - ~/code/docker/docker/config:/config
+      - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
+      - ${LOCAL_DOCKER_PATH}/nginx/${RUN_ENV}:${NGINX_CONFIG}
     networks:
       - frontend
+      - backend
     deploy:
-      replicas: 2
+      replicas: ${DEPLOY_REPLICAS}
     depends_on:
       - php-fpm
     ports:
@@ -39,9 +52,9 @@ services:
   php-fpm:
     image: hellocr/microservice:php-fpm-latest
     volumes:
-      - ~/code/docker/test:/var/www
-      - ~/code/docker/docker/config:/config
+      - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
+      - ${LOCAL_DOCKER_PATH}/php-fpm/${RUN_ENV}:${PHP_FPM_CONFIG}
     networks:
       - frontend
     deploy:
-      replicas: 2
+      replicas: ${DEPLOY_REPLICAS}
