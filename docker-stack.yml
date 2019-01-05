@@ -18,8 +18,6 @@ services:
     volumes:
       - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
       - ${LOCAL_DOCKER_PATH}/workspace/${RUN_ENV}:${WORKSPACE_CONFIG}
-    expose:
-      - 28080
     networks:
       - backend
     deploy:
