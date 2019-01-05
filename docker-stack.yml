@@ -14,7 +14,7 @@ volumes:
 
 services:
   workspace:
-    image: hellocr/microservice:php-workspace-latest
+    image: hellocr/microservice:workspace-latest
     volumes:
       - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
       - ${LOCAL_DOCKER_PATH}/workspace/${RUN_ENV}:${WORKSPACE_CONFIG}
