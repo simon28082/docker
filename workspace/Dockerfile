@@ -55,7 +55,7 @@ RUN if [ ${ARG_WORKSPACE_INSTALL_NPM} = true ]; then \
 
 
 #### crontab #############################
-ARG ARG_WORKSPACE_INSTALL_CRONTAB=false
+ARG ARG_WORKSPACE_INSTALL_CRONTAB=true
 RUN if [ ${ARG_WORKSPACE_INSTALL_CRONTAB} = true ]; then \
     apt-get install -y cron \
 ;fi

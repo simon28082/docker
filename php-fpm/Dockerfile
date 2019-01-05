@@ -54,7 +54,7 @@ RUN if [ ${ARG_PHP_FPM_INSTALL_MONGODB} = true ]; then \
 ;fi
 
 # redis
-ARG ARG_PHP_FPM_INSTALL_REDIS=false
+ARG ARG_PHP_FPM_INSTALL_REDIS=true
 RUN if [ ${ARG_PHP_FPM_INSTALL_REDIS} = true ]; then \
     pecl install redis \
     && docker-php-ext-enable redis \
