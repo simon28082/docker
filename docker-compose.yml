@@ -34,7 +34,7 @@ services:
         - ARG_RUN_ENV=${RUN_ENV}
     volumes:
       - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
-      - ${LOCAL_DOCKER_PATH}/workspace/${RUN_ENV}:${WORKSPACE_DATA}
+      - ${LOCAL_DOCKER_PATH}/workspace/${RUN_ENV}:${WORKSPACE_CONFIG}
     entrypoint: /usr/bin/entrypoint.sh
     command: /bin/bash
     expose:
