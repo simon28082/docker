@@ -39,7 +39,7 @@ RUN ln -snf /usr/share/zoneinfo/${ARG_TIMEZONE} /etc/localtime && echo ${ARG_TIM
 ### config #############################
 # use workdir create dir
 WORKDIR ${ARG_NGINX_CONFIG}
-COPY ./${ARG_RUN_ENV}/*.conf ${ARG_NGINX_CONFIG}
+COPY ./${ARG_RUN_ENV} ${ARG_NGINX_CONFIG}
 
 
 #### volume #############################

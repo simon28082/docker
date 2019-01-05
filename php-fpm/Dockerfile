@@ -65,7 +65,7 @@ RUN if [ ${ARG_PHP_FPM_INSTALL_REDIS} = true ]; then \
 ### config #############################
 # use workdir create dir
 WORKDIR ${ARG_PHP_FPM_CONFIG}
-COPY ./${ARG_RUN_ENV}/ ${ARG_PHP_FPM_CONFIG}
+COPY ./${ARG_RUN_ENV} ${ARG_PHP_FPM_CONFIG}
 
 
 #### volume #############################

@@ -113,7 +113,7 @@ RUN apt-get -y autoremove
 ### config #############################
 # use workdir create dir
 WORKDIR ${ARG_WORKSPACE_CONFIG}
-COPY ./${ARG_RUN_ENV}/ ${ARG_WORKSPACE_CONFIG}
+COPY ./${ARG_RUN_ENV} ${ARG_WORKSPACE_CONFIG}
 
 
 #### volume #############################
