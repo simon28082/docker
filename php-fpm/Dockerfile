@@ -48,7 +48,7 @@ RUN docker-php-ext-install pdo_mysql \
 
 
 # mongodb
-ARG ARG_PHP_FPM_INSTALL_MONGODB=false
+ARG ARG_PHP_FPM_INSTALL_MONGODB=true
 RUN if [ ${ARG_PHP_FPM_INSTALL_MONGODB} = true ]; then \
     pecl install mongodb \
     && docker-php-ext-enable mongodb \
