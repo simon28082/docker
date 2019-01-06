@@ -1,4 +1,4 @@
-version: "3"
+version: "3.6"
 
 networks:
   frontend:
@@ -33,30 +33,25 @@ services:
     volumes:
       - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
       - ${LOCAL_DOCKER_PATH}/workspace/${RUN_ENV}:${WORKSPACE_CONFIG}
-    entrypoint: /usr/bin/entrypoint.sh
-    command: /bin/bash
-    expose:
-      - 28080
-    ports:
-      - ${WORKSPACE_SWOOLE_PORT}:28080
+#    ports:
+#      - ${WORKSPACE_SWOOLE_PORT}:28080
     networks:
       - backend
     tty: true
-  consul:
-    build:
-      context: ${LOCAL_DOCKER_PATH}/consul
-      args:
-        - ARG_CONSUL_CONFIG=${CONSUL_CONFIG}
-        - ARG_CONSUL_DATA=${CONSUL_DATA}
-    volumes:
-      - ${LOCAL_DOCKER_PATH}/consul/config:/${CONSUL_CONFIG}
-      - ${LOCAL_CODE_PATH}/storage/consul:/${CONSUL_DATA}
-    entrypoint: /usr/bin/entrypoint.sh
-    ports:
-      - "127.0.0.1:8500:8500"
-    networks:
-      - frontend
-      - backend
+#  consul:
+#    build:
+#      context: ${LOCAL_DOCKER_PATH}/consul
+#      args:
+#        - ARG_CONSUL_CONFIG=${CONSUL_CONFIG}
+#        - ARG_CONSUL_DATA=${CONSUL_DATA}
+#    volumes:
+#      - ${LOCAL_DOCKER_PATH}/consul/config:/${CONSUL_CONFIG}
+#      - ${LOCAL_CODE_PATH}/storage/consul:/${CONSUL_DATA}
+#    ports:
+#      - "127.0.0.1:8500:8500"
+#    networks:
+#      - frontend
+#      - backend
   nginx:
     build:
       context: ${LOCAL_DOCKER_PATH}/nginx
@@ -72,7 +67,6 @@ services:
     volumes:
       - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
       - ${LOCAL_DOCKER_PATH}/nginx/${RUN_ENV}:${NGINX_CONFIG}
-    entrypoint: /usr/bin/entrypoint.sh
     ports:
       - ${NGINX_HTTP_PORT}:80
       - ${NGINX_SSL_PORT}:443
@@ -80,7 +74,6 @@ services:
       - frontend
       - backend
     depends_on:
-      - workspace
       - php-fpm
   php-fpm:
     build:
@@ -92,12 +85,9 @@ services:
         - ARG_TIMEZONE=${TIMEZONE}
         - ARG_RUN_ENV=${RUN_ENV}
         - ARG_PHP_FPM_CONFIG=${PHP_FPM_CONFIG}
-    entrypoint: /usr/bin/entrypoint.sh
     volumes:
       - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
       - ${LOCAL_DOCKER_PATH}/php-fpm/${RUN_ENV}:${PHP_FPM_CONFIG}
-    expose:
-      - 9000
     networks:
       - frontend
     depends_on:
