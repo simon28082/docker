@@ -2,8 +2,8 @@
 
 php_ini_config_path=${PHP_FPM_CONFIG}/php.ini
 php_fpm_config_path=${PHP_FPM_CONFIG}/php-fpm.conf
-php_ini_config_run_path=/var/php-run.ini
-php_fpm_config_run_path=/var/php-fpm-run.conf
+php_ini_config_run_path=/var/run/php-run.ini
+php_fpm_config_run_path=/var/run/php-fpm-run.conf
 
 
 if [ ! -f "${php_ini_config_path}" ]; then
