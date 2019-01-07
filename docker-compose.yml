@@ -90,5 +90,6 @@ services:
       - ${LOCAL_DOCKER_PATH}/php-fpm/${RUN_ENV}:${PHP_FPM_CONFIG}
     networks:
       - frontend
+      - backend
     depends_on:
       - workspace
