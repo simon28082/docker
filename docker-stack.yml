@@ -15,6 +15,11 @@ volumes:
 services:
   workspace:
     image: hellocr/microservice:workspace-latest
+    environment:
+      - APP_RUN_PUID=${APP_RUN_PUID}
+      - APP_RUN_PGID=${APP_RUN_PGID}
+      - APP_RUN_NAME=${APP_RUN_NAME}
+      - APP_RUN_GROUP=${APP_RUN_GROUP}
     volumes:
       - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
       - ${LOCAL_DOCKER_PATH}/workspace/${RUN_ENV}:${WORKSPACE_CONFIG}
@@ -25,6 +30,11 @@ services:
     tty: true
   nginx:
     image: hellocr/microservice:nginx-latest
+    environment:
+      - APP_RUN_PUID=${APP_RUN_PUID}
+      - APP_RUN_PGID=${APP_RUN_PGID}
+      - APP_RUN_NAME=${APP_RUN_NAME}
+      - APP_RUN_GROUP=${APP_RUN_GROUP}
     volumes:
       - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
       - ${LOCAL_DOCKER_PATH}/nginx/${RUN_ENV}:${NGINX_CONFIG}
@@ -49,6 +59,11 @@ services:
 #        target: 443
   php-fpm:
     image: hellocr/microservice:php-fpm-latest
+    environment:
+      - APP_RUN_PUID=${APP_RUN_PUID}
+      - APP_RUN_PGID=${APP_RUN_PGID}
+      - APP_RUN_NAME=${APP_RUN_NAME}
+      - APP_RUN_GROUP=${APP_RUN_GROUP}
     volumes:
       - ${LOCAL_CODE_PATH}:${CONTAINER_CODE_PATH}
       - ${LOCAL_DOCKER_PATH}/php-fpm/${RUN_ENV}:${PHP_FPM_CONFIG}
