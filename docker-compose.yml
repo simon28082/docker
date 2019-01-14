@@ -9,6 +9,10 @@ networks:
 volumes:
   public:
     driver: ${VOLUME_DRIVER}
+  mongo-db:
+    driver: ${VOLUME_DRIVER}
+  mongo-configdb:
+    driver: ${VOLUME_DRIVER}
 
 services:
   workspace:
@@ -82,6 +86,10 @@ services:
         - ARG_CONTAINER_CODE_PATH=${CONTAINER_CODE_PATH}
         - ARG_PHP_FPM_INSTALL_MONGODB=${PHP_FPM_INSTALL_MONGODB}
         - ARG_PHP_FPM_INSTALL_REDIS=${PHP_FPM_INSTALL_REDIS}
+        - ARG_APP_RUN_PUID=${APP_RUN_PUID}
+        - ARG_APP_RUN_PGID=${APP_RUN_PGID}
+        - ARG_APP_RUN_NAME=${APP_RUN_NAME}
+        - ARG_APP_RUN_GROUP=${APP_RUN_GROUP}
         - ARG_TIMEZONE=${TIMEZONE}
         - ARG_RUN_ENV=${RUN_ENV}
         - ARG_PHP_FPM_CONFIG=${PHP_FPM_CONFIG}
@@ -93,3 +101,22 @@ services:
       - backend
     depends_on:
       - workspace
+  mongo:
+    build:
+      context: ${LOCAL_DOCKER_PATH}/mongo
+      args:
+        - ARG_APP_RUN_PUID=${APP_RUN_PUID}
+        - ARG_APP_RUN_PGID=${APP_RUN_PGID}
+        - ARG_APP_RUN_NAME=${APP_RUN_NAME}
+        - ARG_APP_RUN_GROUP=${APP_RUN_GROUP}
+        - ARG_TIMEZONE=${TIMEZONE}
+        - ARG_RUN_ENV=${RUN_ENV}
+        - ARG_MONGO_CONFIG=${MONGO_CONFIG}
+    volumes:
+      - mongo-db:/data/db
+      - mongo-configdb:/data/configdb
+      - ${LOCAL_DOCKER_PATH}/mongo/${RUN_ENV}:${MONGO_CONFIG}
+    ports:
+      - ${MONGO_PORT}:27017
+    networks:
+      - backend
