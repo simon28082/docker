@@ -42,6 +42,7 @@ RUN apt-get update -yqq \
     && apt-get install -y php7.2-curl \
     && apt-get install -y php7.2-zip \
     && apt-get install -y php7.2-gd \
+    && apt-get install -y php7.2-bcmath \
     && apt-get install -y composer
 
 
