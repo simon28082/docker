@@ -44,9 +44,11 @@ RUN apt-get update -yqq \
 #pdo_mysql,opcache
 RUN docker-php-ext-install pdo_mysql \
     && docker-php-ext-install opcache \
-    && docker-php-ext-install bcmath \
-    && docker-php-ext-install zip
+    && docker-php-ext-install bcmath
 
+# other extension
+RUN pecl install zip \
+    && docker-php-ext-enable zip
 
 # mongodb
 ARG ARG_PHP_FPM_INSTALL_MONGODB=true
