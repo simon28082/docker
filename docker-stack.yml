@@ -27,6 +27,8 @@ services:
       - backend
     deploy:
       replicas: ${DEPLOY_REPLICAS}
+      update_config:
+        parallelism: ${DEPLOY_UPDATE_PARALLELISM}
     tty: true
   nginx:
     image: hellocr/microservice:nginx-latest
@@ -43,6 +45,8 @@ services:
       - backend
     deploy:
       replicas: ${DEPLOY_REPLICAS}
+      update_config:
+        parallelism: ${DEPLOY_UPDATE_PARALLELISM}
     depends_on:
       - php-fpm
     ports:
@@ -72,3 +76,5 @@ services:
       - backend
     deploy:
       replicas: ${DEPLOY_REPLICAS}
+      update_config:
+        parallelism: ${DEPLOY_UPDATE_PARALLELISM}
