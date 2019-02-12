@@ -55,8 +55,9 @@ if [ -f "/etc/crontab" -a -f "${workspace_crontab_config}" ]; then
     cat ${workspace_crontab_config} \
     | sed "s#\${CONTAINER_CODE_PATH}#${CONTAINER_CODE_PATH}#g" \
     | sed "s#\${APP_RUN_NAME}#${APP_RUN_NAME}#g" > /etc/crontab
+
+    service cron restart
 fi
-service cron restart
 
 # change user and group
 createRunUserAndGroupIfNotExists ${APP_RUN_NAME} ${APP_RUN_GROUP} ${APP_RUN_PUID} ${APP_RUN_PGID}
