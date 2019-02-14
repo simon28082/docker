@@ -33,6 +33,7 @@ RUN groupadd -g ${ARG_APP_RUN_PGID} ${ARG_APP_RUN_GROUP} && \
 
 #### software base #############################
 RUN apt-get update -yqq \
+    && apt-get install -y rsyslog \
     && apt-get install -y curl \
     && apt-get install -y apt-utils \
     # php
