@@ -45,6 +45,7 @@ RUN apt-get update -yqq \
 #pdo_mysql,opcache
 RUN docker-php-ext-install pdo_mysql \
     && docker-php-ext-install opcache \
+    && docker-php-ext-install sockets \
     && docker-php-ext-install bcmath
 
 # other extension
