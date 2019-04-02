@@ -35,6 +35,7 @@ RUN ln -snf /usr/share/zoneinfo/${ARG_TIMEZONE} /etc/localtime && echo ${ARG_TIM
 
 #### software install #############################
 RUN apt-get update -yqq \
+    && apt-get install -y libcurl4-openssl-dev pkg-config libssl-dev \
     && apt-get install -y procps \
     && apt-get install -y libzip-dev \
     && pecl channel-update pecl.php.net
