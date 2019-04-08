@@ -57,12 +57,16 @@ fi
 #crontab
 workspace_crontab_config=${WORKSPACE_CONFIG}/crontab
 if [ -f "/etc/crontab" -a -f "${workspace_crontab_config}" ]; then
+    crontab_path=/etc/cron.d/workspace
     cat ${workspace_crontab_config} \
     | sed "s#\${CONTAINER_CODE_PATH}#${CONTAINER_CODE_PATH}#g" \
-    | sed "s#\${APP_RUN_NAME}#${APP_RUN_NAME}#g" > /etc/crontab
+    | sed "s#\${APP_RUN_NAME}#${APP_RUN_NAME}#g" > ${crontab_path}
 
     # Automatically append line breaks to solve Missing newline before EOF problem
-    echo -e "\n" >> /etc/crontab
+    echo -e "\n" >> ${crontab_path}
+
+    # change permission
+    chmod -R 644 $(dirname $crontab_path)
 
     # run cron without daemon mode
     # in docker container service cron restart crontab not executed
