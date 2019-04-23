@@ -38,8 +38,8 @@ RUN apt-get update -yqq \
     && apt-get install -y libcurl4-openssl-dev pkg-config libssl-dev \
     && apt-get install -y procps \
     && apt-get install -y libzip-dev \
+    && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
     && pecl channel-update pecl.php.net
-
 
 #### php pecl #############################
 # base install
@@ -47,6 +47,7 @@ RUN apt-get update -yqq \
 RUN docker-php-ext-install pdo_mysql \
     && docker-php-ext-install opcache \
     && docker-php-ext-install sockets \
+    && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install bcmath
 
 # other extension
