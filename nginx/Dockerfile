@@ -57,7 +57,7 @@ ENTRYPOINT ["/usr/bin/entrypoint.sh"]
 
 
 #### healthcheck #############################
-HEALTHCHECK --interval=60s --timeout=3s --start-period=7s --retries=5 \
+HEALTHCHECK --interval=20s --timeout=3s --start-period=7s --retries=2 \
               CMD /usr/bin/healthcheck.sh
 
 
