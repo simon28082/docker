@@ -13,6 +13,10 @@ volumes:
     driver: ${VOLUME_DRIVER}
   mongo-configdb:
     driver: ${VOLUME_DRIVER}
+  mysql-db:
+    driver: ${VOLUME_DRIVER}
+  mysql-slave-db:
+    driver: ${VOLUME_DRIVER}
 
 services:
   workspace:
@@ -101,14 +105,51 @@ services:
       - backend
     depends_on:
       - workspace
+  mysql:
+    build:
+      context: ${LOCAL_DOCKER_PATH}/mysql
+      args:
+        - ARG_TIMEZONE=${TIMEZONE}
+        - ARG_RUN_ENV=${RUN_ENV}
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_REPLICATION_USER=${MYSQL_REPLICATION_USER}
+      - MYSQL_REPLICATION_PASSWORD=${MYSQL_REPLICATION_PASSWORD}
+    volumes:
+      - mysql-db:/var/lib/mysql
+      - ${LOCAL_DOCKER_PATH}/mysql/${RUN_ENV}:/etc/mysql/conf.d
+      - ${LOCAL_DOCKER_PATH}/mysql/init-sh-sql:/docker-entrypoint-initdb.d
+    ports:
+      - ${MYSQL_PORT}:3306
+    networks:
+      - backend
+  # 注意主从配置是无法通过secrets使用MYSQL_ROOT_PASSWORD_FILE来设置的
+  # 因为优先执行了/docker-entrypoint-initdb.d，此时默认的MYSQL_ROOT_PASSWORD_FILE root密码还未设置
+  mysql-slave:
+    build:
+      context: ${LOCAL_DOCKER_PATH}/mysql
+      args:
+        - ARG_TIMEZONE=${TIMEZONE}
+        - ARG_RUN_ENV=${RUN_ENV}
+    environment:
+      - MYSQL_SLAVE_DELAY=${MYSQL_SLAVE_DELAY}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_REPLICATION_USER=${MYSQL_REPLICATION_USER}
+      - MYSQL_REPLICATION_PASSWORD=${MYSQL_REPLICATION_PASSWORD}
+    volumes:
+      - mysql-slave-db:/var/lib/mysql
+      - ${LOCAL_DOCKER_PATH}/mysql/slave/${RUN_ENV}:/etc/mysql/conf.d
+      - ${LOCAL_DOCKER_PATH}/mysql/slave/init-sh-sql:/docker-entrypoint-initdb.d
+    ports:
+      - ${MYSQL_SLAVE_PORT}:3306
+    networks:
+      - backend
+    depends_on:
+      - mysql
   mongo:
     build:
       context: ${LOCAL_DOCKER_PATH}/mongo
       args:
-        - ARG_APP_RUN_PUID=${APP_RUN_PUID}
-        - ARG_APP_RUN_PGID=${APP_RUN_PGID}
-        - ARG_APP_RUN_NAME=${APP_RUN_NAME}
-        - ARG_APP_RUN_GROUP=${APP_RUN_GROUP}
         - ARG_TIMEZONE=${TIMEZONE}
         - ARG_RUN_ENV=${RUN_ENV}
         - ARG_MONGO_CONFIG=${MONGO_CONFIG}
