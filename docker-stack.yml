@@ -11,6 +11,10 @@ volumes:
     driver: local
   public_config:
     driver: local
+  mysql-db:
+    driver: local
+  mysql-slave-db:
+    driver: local
 
 services:
   workspace:
@@ -79,11 +83,7 @@ services:
       update_config:
         parallelism: ${DEPLOY_UPDATE_PARALLELISM}
   mysql:
-    build:
-      context: hellocr/microservice:mysql-latest
-      args:
-        - ARG_TIMEZONE=${TIMEZONE}
-        - ARG_RUN_ENV=${RUN_ENV}
+    image: hellocr/microservice:mysql-latest
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_REPLICATION_USER=${MYSQL_REPLICATION_USER}
@@ -101,11 +101,7 @@ services:
   # 注意主从配置是无法通过secrets使用MYSQL_ROOT_PASSWORD_FILE来设置的
   # 因为优先执行了/docker-entrypoint-initdb.d，此时默认的MYSQL_ROOT_PASSWORD_FILE root密码还未设置
   mysql-slave:
-    build:
-      context: hellocr/microservice:mysql-latest
-      args:
-        - ARG_TIMEZONE=${TIMEZONE}
-        - ARG_RUN_ENV=${RUN_ENV}
+    image: hellocr/microservice:mysql-latest
     environment:
       - MYSQL_SLAVE_DELAY=${MYSQL_SLAVE_DELAY}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
