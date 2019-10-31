@@ -97,9 +97,8 @@ services:
     networks:
       - backend
     deploy:
+      # swarm只支持一个分片，不能多个实例共享一个数据库文件，否则会冲突
       replicas: 1
-  # 注意主从配置是无法通过secrets使用MYSQL_ROOT_PASSWORD_FILE来设置的
-  # 因为优先执行了/docker-entrypoint-initdb.d，此时默认的MYSQL_ROOT_PASSWORD_FILE root密码还未设置
   mysql-slave:
     image: hellocr/microservice:mysql-latest
     environment:
@@ -118,6 +117,5 @@ services:
     depends_on:
       - mysql
     deploy:
-      replicas: ${DEPLOY_REPLICAS}
-      update_config:
-        parallelism: ${DEPLOY_UPDATE_PARALLELISM}
+      # swarm只支持一个分片，不能多个实例共享一个数据库文件，否则会冲突
+      replicas: 1
