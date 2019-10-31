@@ -78,3 +78,50 @@ services:
       replicas: ${DEPLOY_REPLICAS}
       update_config:
         parallelism: ${DEPLOY_UPDATE_PARALLELISM}
+  mysql:
+    build:
+      context: hellocr/microservice:mysql-latest
+      args:
+        - ARG_TIMEZONE=${TIMEZONE}
+        - ARG_RUN_ENV=${RUN_ENV}
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_REPLICATION_USER=${MYSQL_REPLICATION_USER}
+      - MYSQL_REPLICATION_PASSWORD=${MYSQL_REPLICATION_PASSWORD}
+    volumes:
+      - mysql-db:/var/lib/mysql
+      - ${LOCAL_DOCKER_PATH}/mysql/${RUN_ENV}:/etc/mysql/conf.d
+      - ${LOCAL_DOCKER_PATH}/mysql/init-sh-sql:/docker-entrypoint-initdb.d
+    ports:
+      - ${MYSQL_PORT}:3306
+    networks:
+      - backend
+    deploy:
+      replicas: 1
+  # 注意主从配置是无法通过secrets使用MYSQL_ROOT_PASSWORD_FILE来设置的
+  # 因为优先执行了/docker-entrypoint-initdb.d，此时默认的MYSQL_ROOT_PASSWORD_FILE root密码还未设置
+  mysql-slave:
+    build:
+      context: hellocr/microservice:mysql-latest
+      args:
+        - ARG_TIMEZONE=${TIMEZONE}
+        - ARG_RUN_ENV=${RUN_ENV}
+    environment:
+      - MYSQL_SLAVE_DELAY=${MYSQL_SLAVE_DELAY}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_REPLICATION_USER=${MYSQL_REPLICATION_USER}
+      - MYSQL_REPLICATION_PASSWORD=${MYSQL_REPLICATION_PASSWORD}
+    volumes:
+      - mysql-slave-db:/var/lib/mysql
+      - ${LOCAL_DOCKER_PATH}/mysql/slave/${RUN_ENV}:/etc/mysql/conf.d
+      - ${LOCAL_DOCKER_PATH}/mysql/slave/init-sh-sql:/docker-entrypoint-initdb.d
+    ports:
+      - ${MYSQL_SLAVE_PORT}:3306
+    networks:
+      - backend
+    depends_on:
+      - mysql
+    deploy:
+      replicas: ${DEPLOY_REPLICAS}
+      update_config:
+        parallelism: ${DEPLOY_UPDATE_PARALLELISM}
