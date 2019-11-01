@@ -117,5 +117,5 @@ services:
     depends_on:
       - mysql
     deploy:
-      # swarm只支持一个分片，不能多个实例共享一个数据库文件，否则会冲突
-      replicas: 1
+      # 每台服务器必须只支持一个slave，不能使用复制，因为文件地址属于同一处会有问题
+      mode: global
